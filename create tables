@@ -1,3 +1,3 @@
 create table teachers(TID varchar(100), TNAME varchar(200), TPASS varchar(100), CLASS varchar(100), YEAR varchar(100), isApproved int, primary key (TID));
 
-insert into teachers values (1,"yash mehta","yash","1A","2023_24",0), (2,"mihir patel","mihir","1B","2023_24",0), (3,"kunal adwani","kunal","1C","2023_24",0), (4,"varun bajaj","varun","1D","2023_24",0);
+insert into teachers values (1,"admin","Admin@321",Null,"2023_24",1),(2,"yash mehta","yash","1A","2023_24",0), (3,"mihir patel","mihir","1B","2023_24",0), (4,"kunal adwani","kunal","1C","2023_24",0), (5,"varun bajaj","varun","1D","2023_24",0);
