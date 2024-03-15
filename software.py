@@ -14,8 +14,8 @@ screenwidth = root.winfo_screenwidth()
 # print(screenwidth,screenheight)
 mydb = con.connect(host="localhost",user="root",password="yash1234",database="airport_school1")
 cur = mydb.cursor()
-signup=Frame(root,width=500,height=500,bg="#557A95")
-signup.place(x=(screenwidth//2)-250,y=(screenheight//2)-250)
+signup = Frame(root, width=1000, height=500, bg="#B6D0E2")
+signup.place(x=(screenwidth // 2) - 500, y=(screenheight // 2) - 250)
 
 
 
@@ -87,11 +87,11 @@ def admin_main():
 
             def approve(self, index, approval):
                 if approval:
-                    print(f"Approved: {self.data[index]}")
+                    # print(f"Approved: {self.data[index]}")
                     cur.execute("UPDATE teachers SET isApproved = 1 WHERE TID = {}".format(self.data[index][0]))
                     mydb.commit()
                 else:
-                    print(f"Not approved: {self.data[index]}")
+                    # print(f"Not approved: {self.data[index]}")
                     cur.execute("delete from teachers WHERE TID = {}".format(self.data[index][0]))
                     mydb.commit()
                 # Delete the row
@@ -160,11 +160,9 @@ def teacher_main(user):
 
 
 
-
-def teacher_login():
-    signup = Frame(root, width=1000, height=500, bg="#B6D0E2")
-    signup.place(x=(screenwidth // 2) - 500, y=(screenheight // 2) - 250)
-
+def login_user():
+    for widget in signup.winfo_children():
+        widget.destroy()
     def sign_in():
         id1 = id_entry.get()
         password = code.get()
@@ -234,7 +232,115 @@ def teacher_login():
     root.mainloop()
 
 
-teacher_login()
+
+def signup_user():
+
+
+    def sign_up():
+    
+        cur.execute("select max(TID) from teachers")
+        teacher_max_id = int(cur.fetchone()[0])
+
+
+        new_teacher_id = teacher_max_id + 1
+        new_teacher_name = name_entry.get()
+        new_teacher_password = code.get()
+        new_teacher_class = class_ent.get()
+        new_teacher_year = clicked_year.get()
+        new_teacher_isApproved = 0
+
+        cur.execute("INSERT INTO teachers (TID,TNAME,TPASS,CLASS,YEAR,isApproved) VALUES (%s, %s, %s, %s, %s, %s)",(new_teacher_id, new_teacher_name, new_teacher_password, new_teacher_class, new_teacher_year, new_teacher_isApproved))
+
+
+        messagebox.showinfo("Success", "Account created successfully!\nGo to Login Page.\nYour ID is: " + str(new_teacher_id) + " and Password is: " + new_teacher_password)
+        mydb.commit()
+        
+
+        name_entry.delete(0, 'end')
+        code.delete(0, 'end')
+
+
+    for widget in signup.winfo_children():
+        widget.destroy()
+
+    def on_enter(e):
+        name_entry.delete(0, 'end')
+
+    def on_leave(e):
+        name = name_entry.get()
+        if name == '':
+            name_entry.insert(0, "Name")
+
+    def on_enter_password(e):
+        code.delete(0, 'end')
+
+    def on_leave_password(e):
+        name = code.get()
+        if name == '':
+            code.insert(0, "Password")
+
+
+    bgmainteacher = PhotoImage(file="ICONS/banner.png")
+    background_label = Label(signup, image=bgmainteacher)
+    background_label.place(x=0, y=0)
+
+    identify = Label(signup, text="Account Sign Up", padx=5, pady=5, bg="white", fg="blue",
+                     font=("Arial Rounded MT Bold", 20))
+    identify.place(x=640, y=30)
+
+    name_entry = Entry(signup, width=35, border=1, bg="#F0F0F0", fg="black", font=("Microsoft yaHei UI light", 11),
+                     justify="center")
+    name_entry.place(x=600, y=140)
+    name_entry.insert(0, "Name")
+    name_entry.bind("<FocusIn>", on_enter)
+    name_entry.bind("<FocusOut>", on_leave)
+
+    code = Entry(signup, width=35, border=1, bg="#F0F0F0", fg="black", font=("Microsoft yaHei UI light", 11),
+                 justify="center")
+    code.place(x=600, y=200)
+    code.insert(0, "Password")
+    code.bind("<FocusIn>", on_enter_password)
+    code.bind("<FocusOut>", on_leave_password)
+
+
+
+    class_ent = ttk.Combobox(signup, values=["1A", "1B", "1C", "1D"], width=32, font=("Microsoft yaHei UI light", 11),
+                 justify="center")
+    class_ent.place(x=600, y=260)
+    class_ent.current(0)
+
+
+
+
+    clicked_year = StringVar()
+    year_options = ["2021_22", "2022_23", "2023_24"]
+    clicked_year.set(year_options[-1])  # default value
+
+    YEAR_MENU = OptionMenu(signup, clicked_year, *year_options)
+    YEAR_MENU.place(x=700, y=320)
+    YEAR_MENU.configure(background='#F0F0F0', border=1)
+
+    Button(signup, width=30, pady=7, text="Sign Up", command=sign_up, bg='#F0F0F0', fg="black", cursor="hand2",
+           border=0).place(x=630, y=380)
+
+    root.mainloop()
+       
+
+
+def start():
+
+    for widget in signup.winfo_children():
+        widget.destroy()
+    identify = Label(signup, text = "WELCOME", padx=5, pady=5, bg="lightblue", font=("Arial Rounded MT Bold",20))
+    identify.place(x=180,y=50)
+
+    login_BTN=Button(signup,bg="lightblue",command=login_user,compound=TOP,text="LOGIN",padx=5,pady=5,activebackground='lightblue',relief=FLAT, font=("Arial Rounded MT Bold",20))
+    login_BTN.place(x=200,y=150)
+    signup_BTN=Button(signup,bg="lightblue",compound=TOP,command=signup_user,text="SIGNUP",padx=5,pady=5,activebackground='lightblue',relief=FLAT, font=("Arial Rounded MT Bold",20))
+    signup_BTN.place(x=200,y=250)
+
+start()
+
 
 
 
